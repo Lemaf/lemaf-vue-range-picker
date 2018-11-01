@@ -1,17 +1,36 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div>
+      {{selectedDate.start}} - {{selectedDate.end}}
+    </div>
+    <LemafRangePicker @selected="onDateSelected" @periodo="periodoSelecionado" i18n="PT" ano-inicial="2015" periodo-maximo="5"></LemafRangePicker>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import LemafRangePicker from './components/LemafRangePicker.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    LemafRangePicker
+  },
+  data () {
+    return {
+      selectedDate: {
+        start: '',
+        end: ''
+      },
+      periodo: ''
+    }
+  },
+  methods: {
+    onDateSelected: function (daterange) {
+      this.selectedDate = daterange
+    },
+    periodoSelecionado: function (periodo) {
+      this.periodo = periodo
+    }
   }
 }
 </script>
