@@ -1,26 +1,34 @@
-# lemaf-vue-range-picker
+# Lemaf Vue Range Picker
 
-## Project setup
-```
-npm install
-```
+Componente Vue para seleção de intervalos de datas.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Como usar
 
-### Compiles and minifies for production
-```
-npm run build
-```
+- Importar o componente `import LemafRangePicker from 'lemaf-vue-range-picker'`
+- Importar o css `import 'lemaf-vue-range-picker/dist/lemaf-vue-range-picker.css'`
 
-### Run your tests
-```
-npm run test
-```
+- Incluir o componente: `<lemaf-range-picker @selected="onRangeSelected" v-bind="config"></lemaf-range-picker>`
 
-### Lints and fixes files
+## Evento
+
+O evento `select` retorna um objeto com os atributos `inicio` e `fim`, cada um deles com uma instância `Date` equivalente ao intervalo selecionado. Exemplo:
+
 ```
-npm run lint
+range{
+	inicio: Wed Jan 01 2014 00:00:00 GMT-0200 (-02),
+	fim: Mon Dec 31 2018 00:00:00 GMT-0200 (-02)
+}
+```
+## Configurações do componente
+
+É possível modificar alguns parâmetros do componente, como cores e ano inicial dos intervalos através do parâmetro `config`. Exemplo:
+
+```
+config: {
+	anoInicial: 1992,
+	styles: {
+		baseColor: '#FFA726',
+		overColor: 'white'
+	}
+}
 ```
