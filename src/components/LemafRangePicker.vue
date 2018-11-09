@@ -1,11 +1,8 @@
 <template>
 	<div class="calendar-root">
 		<div class="vue-rangedate-picker-input-date" @click="toggleCalendar()"> {{getRange('start')}} - {{getRange('end')}}</div>
-		<div class="calendar" :class="{'calendar-thin' : !diario, 'calendar-large': diario}" v-if="isOpen">
-			<div class="calendar-head">
-				<h2>{{captions.title}}</h2>
-				<i class="close" @click="toggleCalendar()">&times;</i>
-			</div>
+		<div class="calendar calendar-thin" v-if="isOpen">
+			<i class="close" @click="toggleCalendar()">&times;</i>
 			<div class="calendar-range">
 				<ul class="calendar_preset">
 					<li
@@ -24,34 +21,23 @@
 				<div class="calendar_month_left" v-if="showMonth">
 					<div class="months-text">
 						<i class="left" @click="goPrevMonth"></i>
-						{{monthsLocale[activeMonthStart] +' '+ activeYearStart}}</div>
+						{{monthsLocale[activeMonthStart] +' '+ activeYearStart}}
+						<i class="right" @click="goNextMonth"></i>
+						</div>
 						<ul :class="s.daysWeeks">
 							<li v-for="item in shortDaysLocale" :key="item">{{item}}</li>
 						</ul>
 						<ul v-for="r in 6" :class="[s.days]" :key="r">
-							<li v-bind:id="setDateCellId(r, i, activeMonthStart, activeYearStart)" 
-							v-bind:class="[{[s.daysSelected]: isDateSelected(r, i, 'first', startMonthDay, endMonthDate),
-							[s.daysInRange]: isDateInRange(r, i, 'first', startMonthDay, endMonthDate),
-							[s.dateDisabled]: isDateDisabled(r, i, activeMonthStart, activeYearStart), [s.dayCell]: true}]" 
+							<li v-bind:id="setDateCellId(r, i, activeMonthStart, activeYearStart, endMonthDate, 'first')" 
+							v-bind:class="[{
+							[s.daysSelected]: isDaySelected(r, i, 'first', startMonthDay, endMonthDate),
+							[s.daysInRange]: isDayInRange(r, i, 'first', startMonthDay, endMonthDate),
+							[s.dateDisabled]: isDateDisabled(r, i, activeMonthStart, activeYearStart, 'first'), 
+							[s.cellDisable]: !isDay(r, i, startMonthDay, endMonthDate), 
+							[s.dayCell]: isDay(r, i, startMonthDay, endMonthDate)}]" 
 							v-for="i in numOfDays" :key="i" v-html="getDayCell(r, i, startMonthDay, endMonthDate)"
-							@click="selectFirstItem(r, i)"></li>
+							@click="selecionaPrimeiroItem(r, i)"></li>
 						</ul>
-				</div>
-				<div class="calendar_month_right">
-					<div class="months-text">
-						{{monthsLocale[startNextActiveMonth] +' '+ activeYearEnd}}
-						<i class="right" @click="goNextMonth"></i>
-					</div>
-					<ul :class="s.daysWeeks">
-							<li v-for="item in shortDaysLocale" :key="item">{{item}}</li>
-					</ul>
-					<ul v-for="r in 6" :class="[s.days]" :key="r">
-						<li :class="[{[s.daysSelected]: isDateSelected(r, i, 'second', startNextMonthDay, endNextMonthDate),
-						[s.daysInRange]: isDateInRange(r, i, 'second', startNextMonthDay, endNextMonthDate),
-						[s.dateDisabled]: isDateDisabled(r, i, startNextActiveMonth, activeYearEnd)}]"
-								v-for="i in numOfDays" :key="i" v-html="getDayCell(r, i, startNextMonthDay, endNextMonthDate)"
-									@click="selectSecondItem(r, i)"></li>
-					</ul>
 				</div>
 			</div>
 			<div class="calendar-wrap periodo-mensal-anual" v-if="mensal"> 
@@ -87,6 +73,9 @@
 <script src="./js/rangedate-picker.js"></script>
 
 <style lang="css" scoped>
+
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
 .vue-rangedate-picker-input-date {
 	display: block;
 	font-size: 14px;
@@ -105,9 +94,9 @@
 }
 
 .active-preset {
-	border: 1px solid #0096d9;
 	color: #0096d9;
 	border-radius: 3px;
+	font-size: 14px;
 }
 
 .months-text {
@@ -133,7 +122,7 @@
 
 .calendar-root,
 .calendar-title {
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: 'Montserrat', sans-serif;
 }
 
 .calendar-right-to-left {
@@ -142,7 +131,7 @@
 
 .calendar {
 	display: block;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: 'Montserrat', sans-serif;
 	font-size: 12px;
 	box-shadow: -3px 4px 12px -1px #ccc;
 	background: #fff;
@@ -167,6 +156,8 @@
 
 .calendar-foot {
 	width: 100%;
+	border-top: 1px solid #86BBD8;
+	border-left: none !important;
 }
 
 .calendar-foot > button {
@@ -181,9 +172,9 @@
 .close {
 	float: right;
 	padding: 0 10px;
-	margin-top: -35px;
-	font-size: 32px;
+	font-size: 22px;
 	font-weight: normal;
+	font-family: 'Montserrat', sans-serif;
 }
 
 .calendar ul {
@@ -193,10 +184,11 @@
 .calendar-wrap {
 	display: inline-block;
 	float: left;
+	border-left: 1px solid #86BBD8;
 }
 
 .periodo-diario {
-	width: 75%;
+	width: 70%;
 }
 
 .periodo-mensal-anual {
@@ -206,14 +198,11 @@
 .calendar-range {
 	float: left;
 	padding: 0 12px;
-	border-right: 1px solid #ccc;
 	margin-top: 15px;
 }
 
 .calendar_month_left,
 .calendar_month_right {
-	float: left;
-	width: 43%;
 	padding: 10px;
 	margin: 5px;
 }
@@ -226,7 +215,7 @@
 
 .calendar_weeks li {
 	display: inline-block;
-	width: 13.6%;
+	width: 30px;
 	color: #999;
 	text-align: center;
 }
@@ -238,7 +227,7 @@
 
 .calendar_days li {
 	display: inline-block;
-	width: 13.6%;
+	width: 30px;
 	color: #333;
 	text-align: center;
 	cursor: pointer;
@@ -274,13 +263,24 @@ li.calendar_days--enabled{
 }
 
 li.calendar_days_selected, .calendar_months_years_selected {
-	background: rgb(55, 82, 109, .8);
+	background:#86BBD8;
 	color: #fff;
+	font-weight: bold;
+}
+li.calendar_days_selected:hover {
+	background:#86BBD8;
+	color: #fff;
+	font-weight: bold;
 }
 
 li.calendar_days_in-range, .calendar_months_years_in_range {
-	background: #86BBD8;
-	color: #fff;
+	background: rgba(134, 187, 216, 0.2);
+	color: black;
+}
+
+li.calendar_days_in-range:hover {
+	background: rgba(134, 187, 216, 0.2);
+	color: black;
 }
 
 .calendar_preset {
@@ -304,18 +304,18 @@ li.calendar_days_in-range, .calendar_months_years_in_range {
 	font-size: 14px;
 	border-radius: 3px;
 	cursor:pointer;
+	font-family: 'Montserrat', sans-serif;
 }
 
 .btn-clear {
-	float: right;
-	color:#86BBD8;
-	background: #EEEEEE;
+	float: left;
+	background: none;
 }
 
 .btn-apply {
-	background: #86BBD8;
-	color: #fff;
-	float: left;
+	background: none;
+	color: #86BBD8;
+	float: right;
 }
 
 .range-month-year {
@@ -352,6 +352,12 @@ li.calendar_days_in-range, .calendar_months_years_in_range {
 	height: 100px;
 	overflow: auto;
 	margin-top: 15px;
+}
+
+.cell-disable {
+	cursor: default;
+	color: #ccc;
+	pointer-events: none;
 }
 
 </style>

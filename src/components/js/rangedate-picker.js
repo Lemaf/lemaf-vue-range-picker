@@ -5,7 +5,7 @@ const defaultI18n = 'ID'
 const availableMonths = {
   EN: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November',
     'December'],
-  PT: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'outubro', 'Novembro', 'Dezembro'],
+  PT: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
   ID: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November',
     'Desember']
 }
@@ -59,7 +59,8 @@ const defaultStyle = {
   monthsYearsSelected: 'calendar_months_years_selected',
   monthsYearsInRange: 'calendar_months_years_in_range',
   monthsYearsDisabled: 'calendar_months_years_disabled',
-  dayCell: 'day'
+  dayCell: 'day',
+  cellDisable: 'cell-disable'
 }
 
 const defaultPresets = function (i18n = defaultI18n) {
@@ -170,6 +171,10 @@ export default {
       anual: false,
       selectedYearFromMensalPeriod: '',
       yearsArray: [],
+      dayRange: {
+        start: '',
+        end: ''
+      },
       monthRange: {
         start: '',
         end: ''
@@ -248,19 +253,7 @@ export default {
         return null
       }
       const dateparse = new Date(Date.parse(date))
-      return fecha.format(new Date(dateparse.getFullYear(), dateparse.getMonth(), dateparse.getDate() - 1), format)
-    },
-    getRange: function (range) {
-      if (this.mensal) {
-        if (range === 'end' && this.monthRange.end !== '') {
-          return this.shortMonths[this.monthRange[range]] + ' ' + this.selectedYearFromMensalPeriod
-        }
-        return this.shortMonths[this.monthRange[range]]
-      } else if (this.diario) {
-        return this.getDateString(this.dateRange[range])
-      } else if (this.anual) {
-        return this.yearsArray[this.yearRange[range]]
-      }
+      return fecha.format(new Date(dateparse.getFullYear(), dateparse.getMonth(), dateparse.getDate()), format)
     },
     getFinalRangeFromMonth: function () {
       const range = {}
@@ -283,10 +276,6 @@ export default {
       }
       return range
     },
-    getDayIndexInMonth: function (r, i, startMonthDay) {
-      const date = (this.numOfDays * (r - 1)) + i
-      return date - startMonthDay
-    },
     getDayCell (r, i, startMonthDay, endMonthDate) {
       const result = this.getDayIndexInMonth(r, i, startMonthDay)
       // bound by > 0 and < last day of month
@@ -305,7 +294,6 @@ export default {
         this.isFirstChoice = false
         return { start: resultDate }
       }
-
       // toggle first choice
       this.isFirstChoice = !this.isFirstChoice
       newData[key] = resultDate
@@ -314,7 +302,7 @@ export default {
     selectFirstItem (r, i) {
       const result = this.getDayIndexInMonth(r, i, this.startMonthDay) + 1
       this.dateRange = Object.assign({}, this.dateRange, this.getNewDateRange(result, this.activeMonthStart,
-        this.activeYearStart))
+        this.activeYearStart))      
       if (this.dateRange.start && this.dateRange.end) {
         this.presetActive = ''
       }
@@ -340,38 +328,6 @@ export default {
       if(this.dateRange.start && !this.dateRange.end){
         this.disableAfterMaxPeriod()
       }
-    },
-    enableDatesBeforeToday () {
-      let today = new Date()
-      today.setHours(0, 0, 0, 0)
-      let elements = document.getElementsByClassName(defaultStyle.dayCell)
-      for (var i = 0; i < elements.length; i++) {
-        let time = parseInt(elements[i].id)
-        if(time <= today.getTime()) {
-          elements[i].classList.remove(defaultStyle.dateDisabled)
-        }
-      }
-    },
-    disableAfterMaxPeriod () {
-      let dateSelected = new Date(this.dateRange.start.getTime())
-      dateSelected.setDate(dateSelected.getDate() - 1)
-      let today = new Date()
-      today.setHours(0, 0, 0, 0)
-      let dateLimit = new Date(dateSelected.getTime())
-      dateLimit.setDate(dateLimit.getDate() + parseInt(this.periodoMaximo))
-      while(dateLimit < today) {
-        dateLimit.setDate(dateLimit.getDate() + 1)
-        let element = document.getElementById(dateLimit.getTime())
-        if(element){
-          element.classList.add(defaultStyle.dateDisabled)
-        }
-      } 
-    },
-    setDateCellId (r, i, month, year) {
-      const day = this.getDayIndexInMonth(r, i, this.startMonthDay)
-      const date = new Date(year, month, day)
-      date.setHours(0, 0, 0, 0)
-      return date.getTime()
     },
     selectMes (pos) {
       if (this.monthRange.start === '') {
@@ -426,41 +382,6 @@ export default {
       this.mensal = item.mensal
       this.anual = item.anual
       this.diario = item.diario
-    },
-    setDateValue: function () {
-      if (this.mensal && this.monthRange.start !== '') {
-        this.$emit('selected', this.getFinalRangeFromMonth())
-        this.$emit('periodo', 'MENSAL')
-      }
-      if (this.diario) {
-        const range = {}
-        if (this.dateRange.start) {
-          range.start = new Date(this.dateRange.start.getTime())
-          range.start.setDate(range.start.getDate() - 1)
-        }
-        if (this.dateRange.end) {
-          range.end = new Date(this.dateRange.end.getTime())
-          range.end.setDate(range.end.getDate() - 1)
-        }
-        this.$emit('selected', range)
-        this.$emit('periodo', 'DIARIO')
-      }
-      if (this.anual && this.yearRange.start !== '') {
-        this.$emit('selected', this.getFinalRangeFromYear())
-        this.$emit('periodo', 'ANUAL')
-      }
-      this.toggleCalendar()
-    },
-    clearDateValue: function () {
-      this.isFirstChoice = true
-      this.monthRange.start = ''
-      this.monthRange.end = ''
-      this.dateRange = {}
-      this.yearRange.start = ''
-      this.yearRange.end = ''
-      this.enableDatesBeforeToday()
-      this.$emit('selected', {})
-      this.$emit('periodo', '')
     },
     isMonthSelected: function (pos) {
       if (this.monthRange.start === pos || this.monthRange.end === pos) {
@@ -518,12 +439,183 @@ export default {
         this.yearRange.end = pos
       }
     },
-    isDateDisabled: function (r, i, month, year) {
-      const day = this.getDayIndexInMonth(r, i, this.startMonthDay)
+    //////////////////////////////////////////////////////////////////////////////////////
+    isDateDisabled: function (r, i, month, year, key) {
+      let day = null;
+      if(key == 'first') {
+        day = this.getDayIndexInMonth(r, i, this.startMonthDay)
+      } else {
+        day = this.getDayIndexInMonth(r, i, this.startNextMonthDay)
+      }
       const resultDate = new Date(year, month, day)
+      resultDate.setHours(0, 0, 0, 0)
       const today = new Date()
       today.setHours(0, 0, 0, 0)
+      if(this.dayRange.start != '' && this.dayRange.end == '') {
+        this.dayRange.start.setHours(0, 0, 0, 0)
+        let dateSelected = new Date(this.dayRange.start.getTime())
+        dateSelected.setDate(dateSelected.getDate() + parseInt(this.periodoMaximo))
+        if(resultDate.getTime() > dateSelected.getTime()) {
+          return true
+        }
+      }
       return resultDate > today
-    }
+    },
+    getDayIndexInMonth: function (r, i, startMonthDay) {
+      const date = (this.numOfDays * (r - 1)) + i
+      return date - startMonthDay
+    },
+    setDayRange (result, activeMonth, activeYear) {
+      const resultDate = new Date(activeYear, activeMonth, result)
+      if(this.dayRange.start === '' || resultDate.getTime() < this.dayRange.start.getTime() || this.dayRange.end !== "") {
+        this.dayRange.start = resultDate
+        this.dayRange.end = ''
+      }else {
+        this.dayRange.end = resultDate
+      }
+    },
+    selecionaPrimeiroItem(r, i) {
+      const result = this.getDayIndexInMonth(r, i, this.startMonthDay)
+      this.setDayRange(result, this.activeMonthStart, this.activeYearStart)
+      if(this.dayRange.end != '') {
+        this.enableDatesBeforeToday()
+      }
+    },
+    selecionaSegundoItem(r, i) {
+      const result = this.getDayIndexInMonth(r, i, this.startNextMonthDay)
+      this.setDayRange(result, this.startNextActiveMonth, this.activeYearEnd)
+      if(this.dayRange.end) {
+        this.enableDatesBeforeToday()
+      }
+      if(this.dayRange.start && !this.dayRange.end){
+        this.disableAfterMaxPeriod()
+      }
+    },
+    isDaySelected (r, i, key, startMonthDay, endMonthDate) {
+      const result = this.getDayIndexInMonth(r, i, startMonthDay)
+      if (result < 1 || result > endMonthDate ) return false
+
+      let currDate = null
+      if (key === 'first') {
+        currDate = new Date(this.activeYearStart, this.activeMonthStart, result)
+      } else {
+        currDate = new Date(this.activeYearEnd, this.startNextActiveMonth, result)
+      }
+      return (this.dayRange.start && this.dayRange.start.getTime() === currDate.getTime()) ||
+        (this.dayRange.end && this.dayRange.end.getTime() === currDate.getTime())
+    },
+    isDayInRange (r, i, key, startMonthDay, endMonthDate) {
+      const result = this.getDayIndexInMonth(r, i, startMonthDay)
+      if (result < 1 || result > endMonthDate) return false
+
+      let currDate = null
+      if (key === 'first') {
+        currDate = new Date(this.activeYearStart, this.activeMonthStart, result)
+      } else {
+        currDate = new Date(this.activeYearEnd, this.startNextActiveMonth, result)
+      }
+      return (this.dayRange.start && this.dayRange.start.getTime() < currDate.getTime()) &&
+        (this.dayRange.end && this.dayRange.end.getTime() > currDate.getTime())
+    },
+    setDateCellId (r, i, month, year, endMonthDate, key) {
+      let monthIndex = ''
+      if(key === 'first') {
+        monthIndex = this.startMonthDay
+      } else {
+        monthIndex = this.startNextMonthDay
+      }
+      const day = this.getDayIndexInMonth(r, i, monthIndex)
+      if(day < 1 || day > endMonthDate) {
+        return false
+      } else {
+        const date = new Date(year, month, day)
+        date.setHours(0, 0, 0, 0)
+        return date.getTime()
+      }
+    },
+    isDay (r, i, startMonthDay, endMonthDate) {
+      const result = this.getDayIndexInMonth(r, i, startMonthDay)
+      return result > 0 && result <= endMonthDate ? true : false
+    },
+    enableDatesBeforeToday () {
+      let today = new Date()
+      this.enableDatesBefore (today)
+    },
+    enableDatesBefore (date) {
+      date.setHours(0, 0, 0, 0)
+      let elements = document.getElementsByClassName(defaultStyle.dayCell)
+      for (var i = 0; i < elements.length; i++) {
+        let time = parseInt(elements[i].id)
+        if(time <= date.getTime()) {
+          elements[i].classList.remove(defaultStyle.dateDisabled)
+        }
+      }
+    },
+    disableAfterMaxPeriod () {
+      let dateSelected = new Date(this.dayRange.start.getTime())
+      this.enableDatesBefore (dateSelected)
+      dateSelected.setDate(dateSelected.getDate() - 1)
+      dateSelected.setHours(0, 0, 0, 0)
+      let today = new Date()
+      today.setHours(0, 0, 0, 0)
+      let dateLimit = new Date(dateSelected.getTime())
+      dateLimit.setDate(dateLimit.getDate() + parseInt(this.periodoMaximo))
+      while(dateLimit < today) {
+        dateLimit.setDate(dateLimit.getDate() + 1)
+        dateLimit.setHours(0, 0, 0, 0)
+        let element = document.getElementById(dateLimit.getTime())
+        if(element){
+          element.classList.add(defaultStyle.dateDisabled)
+        }
+      } 
+    },
+    clearDateValue: function () {
+      this.isFirstChoice = true
+      this.monthRange.start = ''
+      this.monthRange.end = ''
+      this.dayRange.start = ''
+      this.dayRange.end = ''
+      this.yearRange.start = ''
+      this.yearRange.end = ''
+      this.enableDatesBeforeToday()
+      this.$emit('selected', {})
+      this.$emit('periodo', '')
+    },
+    setDateValue: function () {
+      if (this.mensal && this.monthRange.start !== '') {
+        this.$emit('selected', this.getFinalRangeFromMonth())
+        this.$emit('periodo', 'MENSAL')
+      }
+      if (this.diario) {
+        const range = {}
+        if (this.dayRange.start != '') {
+          range.start = new Date(this.dayRange.start.getTime())
+          range.start.setDate(range.start.getDate())
+        }
+        if (this.dayRange.end != '') {
+          range.end = new Date(this.dayRange.end.getTime())
+          range.end.setDate(range.end.getDate())
+        }
+        this.$emit('selected', range)
+        this.$emit('periodo', 'DIARIO')
+      }
+      if (this.anual && this.yearRange.start !== '') {
+        this.$emit('selected', this.getFinalRangeFromYear())
+        this.$emit('periodo', 'ANUAL')
+      }
+      this.toggleCalendar()
+    },
+    getRange: function (range) {
+      if (this.mensal) {
+        if (range === 'end' && this.monthRange.end !== '') {
+          return this.shortMonths[this.monthRange[range]] + ' ' + this.selectedYearFromMensalPeriod
+        }
+        return this.shortMonths[this.monthRange[range]]
+      } else if (this.diario) {
+        return this.getDateString(this.dayRange[range])
+      } else if (this.anual) {
+        return this.yearsArray[this.yearRange[range]]
+      }
+    },
   }
 }
