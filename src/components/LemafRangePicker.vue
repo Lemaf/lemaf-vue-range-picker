@@ -84,6 +84,7 @@
 	padding: 10px;
 	border-radius: 5px;
 	border: 1px solid #E0E0E0;
+	background: white
 }
 
 .vue-rangedate-picker-input-date::after {

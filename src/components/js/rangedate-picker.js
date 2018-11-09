@@ -1,7 +1,7 @@
 import fecha from 'fecha'
 
 const defaultConfig = {}
-const defaultI18n = 'ID'
+const defaultI18n = 'PT'
 const availableMonths = {
   EN: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November',
     'December'],
@@ -176,8 +176,8 @@ export default {
         end: ''
       },
       monthRange: {
-        start: '',
-        end: ''
+        start: 0,
+        end: 11
       },
       yearRange: {
         start: '',
