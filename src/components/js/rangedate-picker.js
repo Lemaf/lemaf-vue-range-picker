@@ -153,7 +153,7 @@ export default {
     periodoMaximo: {
       type: String,
       default: '30'
-    }
+    },
   },
   data () {
     return {

@@ -3,7 +3,7 @@
     <div>
       {{selectedDate.start}} - {{selectedDate.end}}
     </div>
-    <LemafRangePicker @selected="onDateSelected" @periodo="periodoSelecionado" i18n="PT" ano-inicial="2015" periodo-maximo="5"></LemafRangePicker>
+    <LemafRangePicker @selected="onDateSelected" @periodo="periodoSelecionado" ano-inicial="2015" periodo-maximo="5"></LemafRangePicker>
   </div>
 </template>
 

@@ -138,6 +138,8 @@
 	background: #fff;
 	position: absolute;
 	z-index: 9;
+	border: 1px solid #86BBD8;
+	border-radius: 10px;
 }
 
 .calendar-thin {
@@ -163,7 +165,7 @@
 
 .calendar-foot > button {
 	display: inline-block;
-	margin: 0 10px 10px 10px
+	margin: 10px
 }
 
 .close:hover {
