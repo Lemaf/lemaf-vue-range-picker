@@ -6,6 +6,7 @@
 		</div>
 		<div class="calendar" v-if="isOpen">
 			<div class="calendar-head">
+				<close class="close"  @click="toggleCalendar()" v-bind:style="getStyleFontColor()"/>
 				<div class="container-head">
 					<div class="title">Período</div>
 					<div class="select-periodo">
@@ -130,7 +131,14 @@ $border-padrao: 1px solid $cinza-padrao
 .chevron-select
 	position: relative
 	float: right
-	margin-right: 5px;
+	margin-right: 10px
+
+.close
+	font-size: 24px
+	position: absolute
+	right: 20px
+	top: 20px
+	cursor: pointer
 
 .calendar-head
 	border-bottom: $border-padrao
