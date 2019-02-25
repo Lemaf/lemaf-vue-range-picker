@@ -1,3 +1,12 @@
+import 'vue-material-design-icons/styles.css'
+import ChevronDownCircleOutline from 'vue-material-design-icons/ChevronDownCircleOutline.vue'
+import ChevronDown from 'vue-material-design-icons/ChevronDown.vue'
+import Close from 'vue-material-design-icons/Close.vue'
+import Vue from 'vue'
+
+Vue.component('chevron-down-circle-outline', ChevronDownCircleOutline)
+Vue.component('chevron-down', ChevronDown)
+Vue.component('close', Close)
 
 const periodos = {
 	mensal: 'Mensal',

@@ -1,6 +1,6 @@
 <template>
-	<div class="calendar-root">
-		<div class="select-style normal-select-style text-secundario" @click="toggleCalendar()">
+	<div class="lemaf-vue-range-picker-calendar-root">
+		<div class="lemaf-vue-range-picker-select-style normal-lemaf-vue-range-picker-select-style text-secundario" @click="toggleCalendar()">
 			<span> {{rangeInterval}} </span>
 			<span class="chevron-select"> <chevron-down-circle-outline v-bind:style="getStyleFontColor()"/> </span>
 		</div>
@@ -10,7 +10,7 @@
 				<div class="container-head">
 					<div class="title">Período</div>
 					<div class="select-periodo">
-						<div class="select-style normal-select-style" @click="toggleSelectPeriodo()">
+						<div class="lemaf-vue-range-picker-select-style normal-lemaf-vue-range-picker-select-style" @click="toggleSelectPeriodo()">
 							<span> {{periodoSelecionado}} </span>
 							<span class="chevron-select"><chevron-down-circle-outline v-bind:style="getStyleFontColor()"/></span>
 						</div>
@@ -43,7 +43,7 @@
 				<div class="title-body" v-bind:style="getStyleFontColor()">
 					Ano de referência
 				</div>
-				<div class="select-style small-select-style text-secundario" @click="toggleAnoReferencia()">
+				<div class="lemaf-vue-range-picker-select-style small-lemaf-vue-range-picker-select-style text-secundario" @click="toggleAnoReferencia()">
 					<span> {{anoReferencia}} </span>
 					<span class="chevron-select"> <chevron-down-circle-outline v-bind:style="getStyleFontColor()"/> </span>
 				</div>
@@ -90,22 +90,41 @@
 
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
 
+html, body, div, span,
+h1, h2, h3, h4, h5, h6, p,
+abbr, address, cite, code,
+del, dfn, em, img,
+small, strong, sub, sup, var,
+b, i, ol, ul, li
+footer, header
+	margin: 0
+	padding: 0
+	border: 0
+	outline: 0
+	font-size: 100%
+	vertical-align: baseline
+	background: transparent
+
 $cinza-padrao: #E0E0E0
 $border-padrao: 1px solid $cinza-padrao
 
-.select-style
+.lemaf-vue-range-picker-lemaf-vue-range-picker-calendar-root
+	font-family: 'Open Sans', sans-serif
+
+.lemaf-vue-range-picker-select-style
 	font-size: 14px
 	cursor: pointer
 	border: $border-padrao
 	background: white;
 	font-family: 'Open Sans', sans-serif
 	border-radius: 20px
+	text-align: center
 
-.normal-select-style
+.normal-lemaf-vue-range-picker-select-style
 	padding: 10px 0
 	width: 131px
 
-.small-select-style
+.small-lemaf-vue-range-picker-select-style
 	padding: 5px 0
 	width: 98px
 
@@ -124,8 +143,6 @@ $border-padrao: 1px solid $cinza-padrao
 	width: 474px
 	height: 399px
 	margin-top: 5px
-
-.calendar-root
 	font-family: 'Open Sans', sans-serif
 
 .chevron-select
@@ -194,6 +211,7 @@ $border-padrao: 1px solid $cinza-padrao
 
 		.item
 			cursor: pointer
+			text-align: center
 
 		.item-ano
 			padding: 9px
