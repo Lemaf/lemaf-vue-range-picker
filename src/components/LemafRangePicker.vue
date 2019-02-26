@@ -26,16 +26,18 @@
 				<div class="title-body" v-bind:style="getStyleFontColor()">
 					Ano / Anos
 				</div>
-				<div class="content-body">
-					<div class="item item-ano"
-						v-for="ano in yearsArray"
-						:key="ano"
-						v-bind:class="{
-							'primeiro-item': inicioSelecao(periodos.anual, ano) ||  yearsArray.indexOf(ano) % 7 === 0 ,
-							'ultimo-item': fimSelecao(periodos.anual, ano) ||(yearsArray.indexOf(ano) + 1) % 7 === 0}"
-						@click="setPeriodoAnual(ano)"
-						v-bind:style="getStyleIfInterval(periodos.anual, ano)">
-						{{ano}}
+				<div class="range-anual">
+					<div class="content-body">
+						<div class="item item-ano"
+							v-for="ano in yearsArray"
+							:key="ano"
+							v-bind:class="{
+								'primeiro-item': inicioSelecao(periodos.anual, ano) ||  yearsArray.indexOf(ano) % 7 === 0 ,
+								'ultimo-item': fimSelecao(periodos.anual, ano) ||(yearsArray.indexOf(ano) + 1) % 7 === 0}"
+							@click="setPeriodoAnual(ano)"
+							v-bind:style="getStyleIfInterval(periodos.anual, ano)">
+							{{ano}}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -104,6 +106,7 @@ footer, header
 	font-size: 100%
 	vertical-align: baseline
 	background: transparent
+	line-height: 100%
 
 $cinza-padrao: #E0E0E0
 $border-padrao: 1px solid $cinza-padrao
@@ -203,11 +206,14 @@ $border-padrao: 1px solid $cinza-padrao
 		text-align: left
 		margin-bottom: 5px
 
+	.range-anual
+		overflow: auto
+		max-height: 170px
+
 	.content-body
 		display: flex
 		flex-wrap: wrap
 		justify-content: flex-start
-		overflow: auto
 
 		.item
 			cursor: pointer

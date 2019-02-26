@@ -28,18 +28,6 @@ export default {
 			type: Object,
 			default: () => defaultStyles
 		},
-		initRange: {
-			type: Object,
-			default: () => null
-		},
-		startActiveMonth: {
-			type: Number,
-			default: new Date().getMonth()
-		},
-		startActiveYear: {
-			type: Number,
-			default: new Date().getFullYear()
-		},
 		anoInicial: {
 			type: Number,
 			default: 2000
@@ -71,7 +59,6 @@ export default {
 			isSelectPeriodoOpen: false,
 			isSelectAnoReferenciaOpen: false,
 			anoReferencia: null,
-			showMonth: false,
 			yearsArray: [],
 			yearsArrayReverse:[],
 			meses: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
@@ -95,7 +82,7 @@ export default {
 	created() {
 
 		this.yearsArray = this.getYearInterval()
-		this.yearsArrayReverse = Object.create(this.yearsArray)
+		this.yearsArrayReverse = Object.assign([], this.yearsArray)
 		this.yearsArrayReverse.reverse()
 		this.periodoSelecionado = this.periodoDefault
 		this.anoReferencia = this.anoFinal

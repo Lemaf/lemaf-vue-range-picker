@@ -26,7 +26,7 @@ export default {
 		return {
 
 			config: {
-				anoInicial: 1992,
+				anoInicial: 2015,
 				styles: {
 					baseColor: '#FFA726',
 					overColor: 'white'
