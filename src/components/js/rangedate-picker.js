@@ -324,6 +324,12 @@ export default {
 
 			}
 
+		},
+
+		isMonthDisabled: function(mes) {
+
+			return new Date() < new Date(this.anoReferencia, mes, 1)
+
 		}
 
 	}

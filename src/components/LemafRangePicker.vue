@@ -69,6 +69,7 @@
 					<div class="item item-mes"
 						v-for="mes in meses"
 						v-bind:class="{
+							'disabled': isMonthDisabled(meses.indexOf(mes)),
 							'primeiro-item': inicioSelecao(periodos.mensal, mes) || mes === meses[6],
 							'ultimo-item': fimSelecao(periodos.mensal, mes) || mes === meses[5]}"
 						:key="mes"
@@ -133,6 +134,11 @@ $border-padrao: 1px solid $cinza-padrao
 
 .text-secundario
 	color: #9E9E9E
+
+.disabled
+	color: $cinza-padrao
+	cursor: default
+	pointer-events: none;
 
 .calendar
 	display: block
