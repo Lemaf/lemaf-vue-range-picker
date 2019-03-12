@@ -181,9 +181,14 @@ export default {
 
 		setPeriodoAnual: function(ano) {
 
-			if(this.rangeAnual.fim !== null && this.rangeAnual.inicio < ano) {
+			if(this.rangeAnual.fim !== null && this.rangeAnual.inicio < ano && this.rangeAnual.fim !== ano) {
 
 				this.rangeAnual.fim = ano
+
+			} else if(this.rangeAnual.fim === ano && this.rangeAnual.inicio === ano) {
+
+				this.rangeAnual.inicio = null
+				this.rangeAnual.fim = null
 
 			} else {
 
@@ -198,9 +203,14 @@ export default {
 
 			let mes = this.meses.indexOf(nomeMes)
 
-			if(this.rangeMensal.fim < mes) {
+			if(this.rangeMensal.fim !== null && this.rangeMensal.fim < mes && this.rangeMensal.fim !== mes) {
 
 				this.rangeMensal.fim = mes
+
+			} else if(this.rangeMensal.fim === mes && this.rangeMensal.inicio === mes) {
+
+				this.rangeMensal.inicio = null
+				this.rangeMensal.fim = null
 
 			} else {
 
